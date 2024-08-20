@@ -1,6 +1,5 @@
 pandas
 numpy
-random
 seaborn
 matplotlib
 scikit-learn
