@@ -1,0 +1,28 @@
+# Use the base Python image
+FROM python:3.9-slim
+
+# Define build arguments for UID and GID
+ARG USER_ID
+ARG GROUP_ID
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Create a group and user with the specified UID and GID
+RUN addgroup --gid $GROUP_ID user && \
+    adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
+
+# Copy all project files into the container
+COPY . /app
+WORKDIR /app
+
+# Set access rights
+RUN chown -R user:user /app
+
+# Switch to the created user
+USER user
+
+# Specify the command to run Jupyter Notebook
+CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
+
