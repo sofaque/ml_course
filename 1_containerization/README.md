@@ -1,5 +1,5 @@
 1. Clone repository to folder on your computer
-> git clone https://github.com/sofaque/ml_course.git)
+> git clone https://github.com/sofaque/ml_course.git
 2. Navigate to folder with first task
 > ../ml_course/1_containerization
 3. (Optional) Set environment variables if neccesary. Otherwise default will be used
