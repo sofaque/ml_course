@@ -1,15 +1,15 @@
 services:
   jupyter:
-    build: .
+    build:
+      context: .
+      args:
+        USER_ID: ${USER_ID:-1000}  # passing UID
+        GROUP_ID: ${GROUP_ID:-1000}  # passing GID
     ports:
       - "8888:8888"
     volumes:
       - ./data:/app/data
     environment:
       - JUPYTER_ENABLE_LAB=yes
+      - JUPYTER_TOKEN=""  # Отключение токена
     user: "${USER_ID}:${GROUP_ID}"  # setting user and group
-    build:
-      context: .
-      args:
-        USER_ID: ${USER_ID}  # passing UID
-        GROUP_ID: ${GROUP_ID}  # passing GID
