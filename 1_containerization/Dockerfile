@@ -13,6 +13,11 @@ RUN pip install --no-cache-dir -r requirements.txt
 RUN addgroup --gid $GROUP_ID user && \
     adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 
+# turning off password/token protection for notebook
+RUN mkdir -p /root/.jupyter && \
+    echo "c.NotebookApp.token = ''" >> /root/.jupyter/jupyter_notebook_config.py && \
+    echo "c.NotebookApp.password = ''" >> /root/.jupyter/jupyter_notebook_config.py
+
 # Copy all project files into the container
 COPY . /app
 WORKDIR /app
@@ -25,4 +30,3 @@ USER user
 
 # Specify the command to run Jupyter Notebook
 CMD ["jupyter", "notebook", "--ip=0.0.0.0", "--port=8888", "--no-browser", "--allow-root"]
-
