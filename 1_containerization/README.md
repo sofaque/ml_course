@@ -4,6 +4,7 @@
 > ../ml_course/1_containerization
 3. (Optional) Set environment variables if neccesary. Otherwise default will be used
 > export USER_ID=$(id -u)
+
 > export GROUP_ID=$(id -g)
 4. Ensure Docker is running, then start the container:
 > docker-compose up
