@@ -1,10 +1,1 @@
 /dataset_57_hypothyroid.csv
-/data_cleaned.csv
-/X_train_S_2.csv
-/X_test_S_2.csv
-/split.py
-/encoding.py
-/resampling.py
-/train.py
-/cleaning.py
-/scaling.py
