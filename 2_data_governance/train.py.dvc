@@ -1,6 +1,0 @@
-outs:
-- md5: f4d66fffe69a8887b4ffacb1ac08ab80
-  size: 1119
-  isexec: true
-  hash: md5
-  path: train.py
