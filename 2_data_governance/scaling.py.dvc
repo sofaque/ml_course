@@ -1,0 +1,6 @@
+outs:
+- md5: 5ce95afb6c77b3da3f985324dd5c3b7e
+  size: 489
+  isexec: true
+  hash: md5
+  path: scaling.py

@@ -1,0 +1,6 @@
+outs:
+- md5: c08b6e3a0de9ea8819d41d9572eb7158
+  size: 759
+  isexec: true
+  hash: md5
+  path: split.py

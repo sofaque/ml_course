@@ -1,0 +1,6 @@
+outs:
+- md5: b9d6f9293f5840e0201f2e7cdd635934
+  size: 495
+  isexec: true
+  hash: md5
+  path: cleaning.py
