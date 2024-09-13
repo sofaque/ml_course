@@ -10,7 +10,7 @@
 > docker-compose up
 5. Open your browser and go to:
 > http://localhost:8888
-6. To stop the container, run:
+6. To stop the container, from folder with first task run:
 > docker-compose down
 
 
