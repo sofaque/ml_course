@@ -1,0 +1,49 @@
+schema: '2.0'
+stages:
+  data_cleaning:
+    cmd: /home/uladzislau/ml_course/2_data_governance/venv/bin/python cleaning.py
+    deps:
+    - path: cleaning.py
+      hash: md5
+      md5: ae2eb0c324b434875b664e23359b45be
+      size: 1057
+      isexec: true
+    - path: dataset_57_hypothyroid.csv
+      hash: md5
+      md5: 044314e32dd9bcbac7b067fa67736c2f
+      size: 306545
+      isexec: true
+    - path: requirements.txt
+      hash: md5
+      md5: fb77fd1ae028a641a9af0fd2f80db74d
+      size: 53
+    outs:
+    - path: data_cleaned.csv
+      hash: md5
+      md5: d05fc5f5651d5289dbff3a3218c410f1
+      size: 188506
+  data_scaling:
+    cmd: /home/uladzislau/ml_course/2_data_governance/venv/bin/python scaling.py
+    deps:
+    - path: data_cleaned.csv
+      hash: md5
+      md5: d05fc5f5651d5289dbff3a3218c410f1
+      size: 188506
+    - path: requirements.txt
+      hash: md5
+      md5: fb77fd1ae028a641a9af0fd2f80db74d
+      size: 53
+    - path: scaling.py
+      hash: md5
+      md5: a1c03e5644b04c6f2ad3423ba79f74a5
+      size: 1521
+      isexec: true
+    outs:
+    - path: X_test_S_2.csv
+      hash: md5
+      md5: 86edfe79512414127c5d7f513f46c7e9
+      size: 371889
+    - path: X_train_S_2.csv
+      hash: md5
+      md5: ad6ab83e4ced22cb4dfefed0aeba932a
+      size: 868085
