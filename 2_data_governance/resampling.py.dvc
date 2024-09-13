@@ -1,0 +1,6 @@
+outs:
+- md5: 266653657c935909ab0d5413ba590a49
+  size: 814
+  isexec: true
+  hash: md5
+  path: resampling.py
