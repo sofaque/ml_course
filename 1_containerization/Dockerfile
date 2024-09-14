@@ -9,6 +9,9 @@ ARG GROUP_ID
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install dvc to use container for 2nd task, comment if not needed
+RUN pip install dvc[all]
+
 # Create a group and user with the specified UID and GID
 RUN addgroup --gid $GROUP_ID user && \
     adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
