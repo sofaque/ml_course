@@ -9,6 +9,9 @@ ARG GROUP_ID
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Install git to use container for 2nd task, comment if not needed
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
 # Install dvc to use container for 2nd task, comment if not needed
 RUN pip install dvc[all]
 
