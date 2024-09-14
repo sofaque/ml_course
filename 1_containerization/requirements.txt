@@ -3,4 +3,8 @@ numpy
 seaborn
 matplotlib
 scikit-learn
-jupyter
+jupyterS
+imbalanced-learn
+PyYAML
+python-box
+imblearn
