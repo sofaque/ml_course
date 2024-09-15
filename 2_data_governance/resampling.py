@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import matplotlib
 import yaml
-from box import ConfigBox
 from imblearn.over_sampling import SMOTE
 
 # Load parameters from params.yaml
