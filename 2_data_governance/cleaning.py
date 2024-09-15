@@ -15,4 +15,4 @@ df = df[df['age']<=100]
 
 df['Class'] = df['Class'].replace(['negative', 'compensated_hypothyroid', 'primary_hypothyroid', 'secondary_hypothyroid'], [0, 1, 1, 1])
 
-df.to_csv("data_cleaned.csv")
+df.to_csv("data_cleaned.csv", index=False)
