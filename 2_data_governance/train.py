@@ -12,7 +12,7 @@ y_test = pd.read_csv("y_test_encoded.csv")
 
 # Logistic regression after implementing SMOTE
 lr = LogisticRegression()
-lr.fit(X_train_res, y_train_res.ravel())
+lr.fit(X_train_res, y_train_res.values.ravel())
 
 y_pred_lr = lr.predict(X_test_scaled)
 
