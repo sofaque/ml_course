@@ -25,7 +25,6 @@ RUN mkdir -p /root/.jupyter && \
     echo "c.NotebookApp.password = ''" >> /root/.jupyter/jupyter_notebook_config.py
 
 # Copy all project files into the container
-COPY . /app
 WORKDIR /app
 
 # Set access rights
