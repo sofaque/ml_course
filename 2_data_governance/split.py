@@ -13,17 +13,17 @@ df = pd.read_csv("data_cleaned.csv")
 X_train, X_test, y_train, y_test = train_test_split(
     df.drop(labels=['Class'], axis=1),
     df['Class'],
-    test_size = params.split.test_size,
-    random_state = params.split.random_state)
+    test_size = params['split']['test_size'],
+    random_state = params['split']['random_state'])
 
 X_train = pd.DataFrame(X_train)
-X_train.to_csv("X_train.csv, index=False")
+X_train.to_csv("X_train.csv")
 
 y_train = pd.DataFrame(y_train)
-y_train.to_csv("y_train.csv", index=False)
+y_train.to_csv("y_train.csv")
 
 X_test = pd.DataFrame(X_test)
-X_test.to_csv("X_test.csv", index=False)
+X_test.to_csv("X_test.csv")
 
 y_test = pd.DataFrame(y_test)
-y_test.to_csv("y_test.csv", index=False)
+y_test.to_csv("y_test.csv")
