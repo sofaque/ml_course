@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 
 # Load parameters from params.yaml
 with open("params.yaml", "r") as f:
-    params = yaml.safe_load(f))
+    params = yaml.safe_load(f)
 
 df = pd.read_csv("data_cleaned.csv")
 
