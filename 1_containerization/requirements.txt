@@ -1,10 +1,8 @@
 pandas
 numpy
-seaborn
 matplotlib
 scikit-learn
-jupyterS
+jupyter
 imbalanced-learn
 PyYAML
-python-box
 imblearn
