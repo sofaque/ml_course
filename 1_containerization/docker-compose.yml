@@ -10,6 +10,5 @@ services:
     volumes:
       - ..:/app
     environment:
-      - JUPYTER_ENABLE_LAB=yes
       - JUPYTER_TOKEN=""  # Отключение токена
     user: "${USER_ID}:${GROUP_ID}"  # setting user and group
