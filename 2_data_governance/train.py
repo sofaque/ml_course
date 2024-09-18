@@ -2,8 +2,7 @@ import numpy as np
 import pandas as pd
 import json
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
+from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
 
 X_train_res = pd.read_csv("X_train_res.csv", index_col=0)
 y_train_res = pd.read_csv("y_train_res.csv", index_col=0)
@@ -16,22 +15,25 @@ lr.fit(X_train_res, y_train_res.values.ravel())
 
 y_pred_lr = lr.predict(X_test_scaled)
 
-# Compute metrics
-conf_matrix = confusion_matrix(y_test, y_pred_lr).tolist()  # Convert to list for JSON serialization
-class_report = classification_report(y_test, y_pred_lr, output_dict=True)  # Convert to dict for JSON serialization
+# Compute simplified metrics
 accuracy = accuracy_score(y_test, y_pred_lr)
+precision = precision_score(y_test, y_pred_lr, average='macro')
+recall = recall_score(y_test, y_pred_lr, average='macro')
+f1 = f1_score(y_test, y_pred_lr, average='macro')
 
 # Save metrics to a JSON file for DVC
 metrics = {
     "accuracy": accuracy,
-    "confusion_matrix": conf_matrix,
-    "classification_report": class_report
+    "precision": precision,
+    "recall": recall,
+    "f1_score": f1
 }
 
 with open("metrics.json", "w") as f:
-    json.dump(metrics, f)
+    json.dump(metrics, f, indent=4)
 
 print("Metrics saved to metrics.json")
+
 
 
 
