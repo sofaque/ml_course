@@ -1,0 +1,72 @@
+params:
+- params.yaml
+
+metrics:
+- metrics.json
+
+stages:
+  cleaning:
+    cmd: python cleaning.py
+    deps:
+      - cleaning.py
+      - dataset_57_hypothyroid.csv
+    outs:
+      - data_cleaned.csv
+
+  split:
+    cmd: python split.py
+    deps:
+      - split.py
+      - data_cleaned.csv
+    outs:
+      - X_train.csv
+      - y_train.csv
+      - X_test.csv
+      - y_test.csv
+
+  encoding:
+    cmd: python encoding.py
+    deps:
+      - encoding.py
+      - X_train.csv
+      - y_train.csv
+      - X_test.csv
+      - y_test.csv
+    outs:
+      - X_train_encoded.csv
+      - y_train_encoded.csv
+      - X_test_encoded.csv
+      - y_test_encoded.csv
+
+  scaling:
+    cmd: python scaling.py
+    deps:
+      - scaling.py
+      - X_train_encoded.csv
+      - X_test_encoded.csv
+    outs:
+      - X_train_scaled.csv
+      - X_test_scaled.csv
+
+  resampling:
+    cmd: python resampling.py
+    deps:
+      - resampling.py
+      - X_train_scaled.csv
+      - y_train_encoded.csv
+    params:
+      - split
+    outs:
+      - X_train_res.csv
+      - y_train_res.csv
+
+  train:
+    cmd: python train.py
+    deps:
+      - train.py
+      - X_train_res.csv
+      - y_train_res.csv
+      - X_test_scaled.csv
+      - y_test_encoded.csv
+    outs:
+      - metrics.json
