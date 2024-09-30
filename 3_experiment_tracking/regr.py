@@ -110,9 +110,6 @@ def model_fit(parameters, x_train, x_test, Y_train, Y_test, model_name):
         # Log the model
         mlflow.sklearn.log_model(model_, "model")
 
-'''Calculate train_test_split score of differnt models and plot them.'''
-models = [knn, dt, rf, xgb, lgb]
-
 params_knn = dict(n_neighbors=list(range(3, 20)))
 
 params_dt = {
