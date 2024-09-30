@@ -38,8 +38,8 @@ from xgboost import XGBRegressor
 from lightgbm import LGBMRegressor
 from sklearn.metrics import r2_score
 from sklearn.metrics import mean_squared_error, mean_absolute_error
-
 import mlflow
+
 mlflow.set_tracking_uri("http://mlflow:5000")
 
 df = pd.read_csv('hour.csv')
@@ -78,7 +78,6 @@ xgb = XGBRegressor()
 lgb = LGBMRegressor()
         
 def model_fit(parameters, x_train, x_test, Y_train, Y_test, model_name):
-    start_time = timer(None)  # Start timer
 
     # Start MLFlow run with a unique name for each model
     with mlflow.start_run(run_name=model_name):
