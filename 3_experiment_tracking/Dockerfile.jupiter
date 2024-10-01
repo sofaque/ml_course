@@ -9,7 +9,11 @@ ARG GROUP_ID
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
+# installing lightgbm
 RUN apt-get update && apt-get install -y libgomp1
+
+# add git so mlflow can get GIT SHA for versioning
+RUN apt-get update && apt-get install -y git
 
 # Create a group and user with the specified UID and GID
 RUN addgroup --gid $GROUP_ID user && \
