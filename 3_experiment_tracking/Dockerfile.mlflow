@@ -4,6 +4,9 @@ FROM python:3.9-slim
 # Install MLFlow and dependencies
 RUN pip install mlflow
 
+# add git so mlflow can get GIT SHA for versioning
+RUN apt-get update && apt-get install -y git
+
 # Expose the default MLFlow port
 EXPOSE 5000
 
