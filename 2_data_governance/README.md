@@ -58,7 +58,7 @@ dvc metrics show
 ```
 ## 8 Exit the container:
 
-> Ctrl+D
+> Ctrl+C
 
 ```bash
 docker-compose down
