@@ -24,7 +24,7 @@ docker-compose up
  - Ensure that the models and artifacts have been successfully logged.
 ## 8 Exit the container:
 
-> Ctrl+D
+> Ctrl+C
 
 ```bash
 docker-compose down
