@@ -1,0 +1,29 @@
+services:
+  jupyter-client:
+    build:
+      context: .
+      dockerfile: Dockerfile.jupyter
+      args:
+        USER_ID: ${USER_ID:-1000}
+        GROUP_ID: ${GROUP_ID:-1000}
+    ports:
+      - "8888:8888"
+    volumes:
+      - ./data:/app/data
+    environment:
+      - JUPYTER_TOKEN=""
+      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
+    user: "${USER_ID}:${GROUP_ID}"
+    depends_on:
+      - mlflow-server
+
+  mlflow-server:
+    build:
+      context: .
+      dockerfile: Dockerfile.mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ./mlflow_artifacts:/mlflow_artifacts
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
