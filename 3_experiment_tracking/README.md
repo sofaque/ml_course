@@ -22,11 +22,10 @@ docker-compose up
  - After running the notebook, open http://localhost:5000 in your browser.
  - 
  - Ensure that the models and artifacts have been successfully logged.
-## 8 Exit the container:
+## 6 Exit the container:
 
 > Ctrl+C
 
 ```bash
 docker-compose down
 ```
-docker-compose down
