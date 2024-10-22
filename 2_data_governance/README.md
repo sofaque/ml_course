@@ -63,4 +63,3 @@ dvc metrics show
 ```bash
 docker-compose down
 ```
-docker-compose down
