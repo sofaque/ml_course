@@ -1,27 +1,36 @@
 services:
-  jupyter:
-    build:
-      context: .
-      dockerfile: Dockerfile.jupyter
-      args:
-        USER_ID: ${USER_ID:-1000}
-        GROUP_ID: ${GROUP_ID:-1000}
-    ports:
-      - "8888:8888"
-    volumes:
-      - .:/app
-      - ./mlruns:/mlflow-server/artifacts  # Монтируем артефакты
+  postgres:
+    image: postgres:13
     environment:
-      - JUPYTER_TOKEN=""
-    user: "${USER_ID}:${GROUP_ID}"
-    depends_on:
-      - mlflow
-
-  mlflow:
-    build:
-      context: .
-      dockerfile: Dockerfile.mlflow
-    ports:
-      - "5000:5000"
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
     volumes:
-      - ./mlruns:/mlflow-server
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - airflow-network
+
+  airflow:
+    build: .
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    ports:
+      - "8080:8080"
+    depends_on:
+      - postgres
+    networks:
+      - airflow-network
+    command: ["airflow", "standalone"]
+
+networks:
+  airflow-network:
+
+volumes:
+  postgres_data:
+  airflow_logs:

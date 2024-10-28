@@ -1,5 +1,3 @@
-dockerfile
-Copy code
 # Используем официальный образ Airflow
 FROM apache/airflow:2.7.1
 
