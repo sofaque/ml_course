@@ -21,9 +21,9 @@ with DAG('data_preprocessing_pipeline',
 
     # Task 1: Load and combine data
     def load_and_combine_data():
-        df1 = pd.read_csv('/opt/airflow/data/hour.csv')
-        df2 = pd.read_csv('/opt/airflow/data/weather.csv')
-        df = pd.concat([df1, df2], axis=0, ignore_index=True)
+        df1 = pd.read_csv('/opt/airflow/data/hour.csv', sep=';')
+        df2 = pd.read_csv('/opt/airflow/data/weather.csv', sep=';')
+        df = pd.merge(df1, df2, on='instant')
         df.to_csv('/opt/airflow/data/combined_data.csv', index=False)
     
     load_and_combine_data_task = PythonOperator(
