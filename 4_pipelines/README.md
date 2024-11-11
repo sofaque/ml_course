@@ -27,26 +27,29 @@ This project sets up an Airflow DAG to preprocess data with tasks including clea
 
 6. **Access Airflow**
    Open your browser and go to:
+   ```bash
    http://localhost:8080
+   ```
+   Login:
+      ```bash
+      airflow
+      ```
+   Password:
+      ```bash
+      airflow
+      ```
 
-Login:
-   ```bash
-   airflow
-Password:
-   ```bash
-   airflow
-
-8. **Run the DAG**
+8. **Run the DA**
    
    In the Airflow UI, run the data_preprocessing_pipeline DAG and monitor progress.
    Ensure that all tasks complete with a "success" status.
 
-10. **Verify output**
+9. **Verify output**
 
     Confirm that processed files were created and are available in
     ml_course_test/4_pipelines/data
 
-14. **Shutdown**
+9. **Shutdown**
 
     When finished, stop and remove volumes:
     ```bash
