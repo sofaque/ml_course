@@ -39,9 +39,9 @@ This project sets up an Airflow DAG to preprocess data with tasks including clea
       airflow
       ```
 
-8. **Run the DAG**
+8. **Trigger DAG**
    
-   In the Airflow UI, run the data_preprocessing_pipeline DAG and monitor progress.
+   In the Airflow UI, manually trigger the "data_preprocessing_pipeline" DAG and monitor progress.
    Ensure that all tasks complete with a "success" status.
 
 9. **Verify output**
