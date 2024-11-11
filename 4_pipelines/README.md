@@ -29,8 +29,12 @@ This project sets up an Airflow DAG to preprocess data with tasks including clea
    Open your browser and go to:
    http://localhost:8080
 
-   Login: airflow
-   Password: airflow
+Login:
+   ```bash
+   airflow
+Password:
+   ```bash
+   airflow
 
 8. **Run the DAG**
    
