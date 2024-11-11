@@ -42,7 +42,7 @@ This project sets up an Airflow DAG to preprocess data with tasks including clea
    Confirm that processed files were created and are available in
    ml_course_test/4_pipelines/data
 
-12. **Shutdown**
+14. **Shutdown**
 
     When finished, stop and remove volumes:
    ```bash
