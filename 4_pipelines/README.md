@@ -43,7 +43,7 @@ This project sets up an Airflow DAG to preprocess data with tasks including clea
    ml_course_test/4_pipelines/data
 
 12. **Shutdown**
-    
-   When finished, stop and remove volumes:
+
+    When finished, stop and remove volumes:
    ```bash
    docker-compose down --volumes
