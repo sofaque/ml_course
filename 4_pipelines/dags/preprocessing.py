@@ -24,7 +24,7 @@ with DAG('data_preprocessing_pipeline',
         df1 = pd.read_csv('/opt/airflow/data/hour.csv')
         df2 = pd.read_csv('/opt/airflow/data/weather.csv')
         df = pd.concat([df1, df2], axis=0, ignore_index=True)
-        return df
+        df.to_csv('/opt/airflow/data/combined_data.csv', index=False)
     
     load_and_combine_data_task = PythonOperator(
         task_id='load_and_combine_data',
@@ -32,98 +32,72 @@ with DAG('data_preprocessing_pipeline',
     )
 
     # Task 2: Feature modification (e.g., date transformation, renaming columns)
-    def feature_modification(df):
+    def feature_modification():
+        df = pd.read_csv('/opt/airflow/data/combined_data.csv')
         df["dteday"] = pd.to_datetime(df["dteday"]).dt.day
         df.rename(columns={"dteday": "day"}, inplace=True)
-        return df
+        df.to_csv('/opt/airflow/data/modified_data.csv', index=False)
     
     feature_modification_task = PythonOperator(
         task_id='feature_modification',
-        python_callable=feature_modification,
-        provide_context=True
+        python_callable=feature_modification
     )
 
     # Task 3: Data cleaning (drop unnecessary columns and filter data)
-    def data_cleaning(df):
+    def data_cleaning():
+        df = pd.read_csv('/opt/airflow/data/modified_data.csv')
         df = df.drop(columns=['instant', 'season'])
         df = df[df['hum'] > 0.1]
-        return df
+        df.to_csv('/opt/airflow/data/cleaned_data.csv', index=False)
     
     data_cleaning_task = PythonOperator(
         task_id='data_cleaning',
-        python_callable=data_cleaning,
-        provide_context=True
+        python_callable=data_cleaning
     )
 
-    # Task 4: Save cleaned data
-    def save_cleaned_data(df):
-        df.to_csv('/opt/airflow/data/cleaned_data.csv', index=False)
-    
-    save_cleaned_data_task = PythonOperator(
-        task_id='save_cleaned_data',
-        python_callable=save_cleaned_data,
-        provide_context=True
-    )
-
-    # Task 5: Split data into features and target
+    # Task 4: Split data into features and target
     def split_data():
         df = pd.read_csv('/opt/airflow/data/cleaned_data.csv')
         X = df.drop(columns=['casual', 'registered', 'cnt'])
         y = df['cnt']
-        return X, y
+        X.to_csv('/opt/airflow/data/X.csv', index=False)
+        y.to_csv('/opt/airflow/data/y.csv', index=False)
     
     split_data_task = PythonOperator(
         task_id='split_data',
         python_callable=split_data
     )
 
-    # Task 6: Split data into train/test sets
-    def train_test_split_data(X, y):
+    # Task 5: Split data into train/test sets
+    def train_test_split_data():
+        X = pd.read_csv('/opt/airflow/data/X.csv')
+        y = pd.read_csv('/opt/airflow/data/y.csv')
         X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
-        return X_train, X_test, y_train, y_test
+        X_train.to_csv('/opt/airflow/data/X_train.csv', index=False)
+        X_test.to_csv('/opt/airflow/data/X_test.csv', index=False)
+        y_train.to_csv('/opt/airflow/data/y_train.csv', index=False)
+        y_test.to_csv('/opt/airflow/data/y_test.csv', index=False)
     
     train_test_split_task = PythonOperator(
         task_id='train_test_split',
         python_callable=train_test_split_data
     )
 
-    # Task 7: Save train/test splits
-    def save_splits(X_train, X_test, y_train, y_test):
-        X_train.to_csv('/opt/airflow/data/X_train.csv', index=False)
-        X_test.to_csv('/opt/airflow/data/X_test.csv', index=False)
-        y_train.to_csv('/opt/airflow/data/y_train.csv', index=False)
-        y_test.to_csv('/opt/airflow/data/y_test.csv', index=False)
-    
-    save_splits_task = PythonOperator(
-        task_id='save_splits',
-        python_callable=save_splits
-    )
-
-    # Task 8: Scale data
+    # Task 6: Scale data
     def scale_data():
         X_train = pd.read_csv('/opt/airflow/data/X_train.csv')
         X_test = pd.read_csv('/opt/airflow/data/X_test.csv')
         scaler = StandardScaler()
         X_train_scaled = scaler.fit_transform(X_train)
         X_test_scaled = scaler.transform(X_test)
-        return X_train_scaled, X_test_scaled
+        pd.DataFrame(X_train_scaled).to_csv('/opt/airflow/data/X_train_scaled.csv', index=False)
+        pd.DataFrame(X_test_scaled).to_csv('/opt/airflow/data/X_test_scaled.csv', index=False)
     
     scale_data_task = PythonOperator(
         task_id='scale_data',
         python_callable=scale_data
     )
 
-    # Task 9: Save scaled data
-    def save_scaled_data(X_train_scaled, X_test_scaled):
-        pd.DataFrame(X_train_scaled).to_csv('/opt/airflow/data/X_train_scaled.csv', index=False)
-        pd.DataFrame(X_test_scaled).to_csv('/opt/airflow/data/X_test_scaled.csv', index=False)
-    
-    save_scaled_data_task = PythonOperator(
-        task_id='save_scaled_data',
-        python_callable=save_scaled_data
-    )
-
     # Define task dependencies
-    load_and_combine_data_task >> feature_modification_task >> data_cleaning_task >> save_cleaned_data_task
-    save_cleaned_data_task >> split_data_task >> train_test_split_task >> save_splits_task
-    save_splits_task >> scale_data_task >> save_scaled_data_task
+    load_and_combine_data_task >> feature_modification_task >> data_cleaning_task >> split_data_task
+    split_data_task >> train_test_split_task >> scale_data_task
