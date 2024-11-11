@@ -33,14 +33,17 @@ This project sets up an Airflow DAG to preprocess data with tasks including clea
    Password: airflow
 
 8. **Run the DAG**
+   
    In the Airflow UI, run the data_preprocessing_pipeline DAG and monitor progress.
    Ensure that all tasks complete with a "success" status.
 
-9. **Verify output**
+10. **Verify output**
+
    Confirm that processed files were created and are available in
    ml_course_test/4_pipelines/data
 
-10. **Shutdown**
+12. **Shutdown**
+    
    When finished, stop and remove volumes:
    ```bash
    docker-compose down --volumes
