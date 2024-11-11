@@ -39,11 +39,11 @@ This project sets up an Airflow DAG to preprocess data with tasks including clea
 
 10. **Verify output**
 
-   Confirm that processed files were created and are available in
-   ml_course_test/4_pipelines/data
+    Confirm that processed files were created and are available in
+    ml_course_test/4_pipelines/data
 
 14. **Shutdown**
 
     When finished, stop and remove volumes:
-   ```bash
-   docker-compose down --volumes
+    ```bash
+    docker-compose down --volumes
