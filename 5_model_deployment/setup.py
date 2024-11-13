@@ -3,18 +3,19 @@ from setuptools import setup, find_packages
 setup(
     name="toxicity_detection",
     version="0.1.0",
-    description="A package for deploying a toxicity detection model as a REST API and batch prediction.",
+    description="Toxicity detection API using Hugging Face model.",
     author="Your Name",
-    packages=find_packages(),  
+    packages=find_packages(where="src"),
+    package_dir={"": "src"},
     install_requires=[
         "flask",
+        "flasgger",
         "transformers",
-        
+        "torch"
     ],
     entry_points={
         "console_scripts": [
-            "toxicity-api = toxicity_detection.app:main",
-            "toxicity-batch = toxicity_detection.batch_predict:main",
+            "toxicity-api = src.app:main",
         ]
     },
 )

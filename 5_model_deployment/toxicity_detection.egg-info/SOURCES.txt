@@ -1,0 +1,9 @@
+setup.py
+src/__init__.py
+src/app.py
+toxicity_detection.egg-info/PKG-INFO
+toxicity_detection.egg-info/SOURCES.txt
+toxicity_detection.egg-info/dependency_links.txt
+toxicity_detection.egg-info/entry_points.txt
+toxicity_detection.egg-info/requires.txt
+toxicity_detection.egg-info/top_level.txt

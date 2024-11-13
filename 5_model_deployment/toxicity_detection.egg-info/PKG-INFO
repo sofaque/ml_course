@@ -1,0 +1,5 @@
+Metadata-Version: 2.1
+Name: toxicity-detection
+Version: 0.1.0
+Summary: A package for deploying a toxicity detection model as a REST API and batch prediction.
+Author: Your Name

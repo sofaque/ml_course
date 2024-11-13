@@ -1,0 +1,3 @@
+[console_scripts]
+toxicity-api = toxicity_detection.app:main
+toxicity-batch = toxicity_detection.batch_predict:main
