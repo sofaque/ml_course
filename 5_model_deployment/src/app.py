@@ -39,7 +39,6 @@ classifier = load_model()
         }
     }
 })
-
 def predict():
     data = request.get_json(force=True)
     comment = data.get("comment", "")
@@ -48,9 +47,35 @@ def predict():
     result = classifier(comment)
     return jsonify(result[0])
 
-# Главная функция для запуска
+@app.route('/')
+def home():
+    return "It works! For prediction navigate to /prediction_form"
+
+@app.route('/predict_form', methods=['GET', 'POST'])
+def predict_form():
+    if request.method == 'POST':
+        comment = request.form.get('comment', "")
+        if not comment:
+            result_html = "<p>Type your comment for prediction</p>"
+        else:
+            # Используем модель для предсказания
+            result = classifier(comment)
+            label = result[0]['label']
+            score = result[0]['score']
+            result_html = f"<p>Predicted label: {label}, with score: {score}</p>"
+
+    # Форма с возможным результатом
+    return f'''
+        {result_html}
+        <form method="post">
+            <label for="comment">Комментарий:</label>
+            <input type="text" id="comment" name="comment">
+            <button type="submit">Отправить</button>
+        </form>
+    '''
+
 def main():
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
 
 if __name__ == "__main__":
     main()
