@@ -11,11 +11,13 @@ setup(
         "flask",
         "flasgger",
         "transformers",
-        "torch"
+        "torch",
+        "pandas"
     ],
     entry_points={
         "console_scripts": [
-            "toxicity-api = src.app:main",
+            "toxicity-api = app:main",
+            "toxicity-batch-predict = batch_predict:main",
         ]
     },
 )

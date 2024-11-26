@@ -2,3 +2,5 @@ flask
 flasgger
 transformers
 setuptools
+pandas
+scikit-learn

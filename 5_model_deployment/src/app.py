@@ -1,13 +1,11 @@
 from flask import Flask, request, jsonify
-from transformers import pipeline
 from flasgger import Swagger, swag_from
-
-model_path = "citizenlab/distilbert-base-multilingual-cased-toxicity"
+from src.load_model import load_model
 
 app = Flask(__name__)
 swagger = Swagger(app)
 
-classifier = pipeline("text-classification", model=model_path, tokenizer=model_path)
+classifier = load_model()
 
 @app.route("/predict", methods=["POST"])
 @swag_from({
