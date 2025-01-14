@@ -1,8 +1,7 @@
-version: "3.8"
-
-x-airflow-common: &airflow-common
+x-airflow-common: 
+  &airflow-common
   build: .
-  image: toxicity_airflow:latest
+  image: ${AIRFLOW_IMAGE_NAME:-toxicity_airflow:latest}
   environment:
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
@@ -72,13 +71,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
-    image: toxicity_api:latest
+    image:  ${AIRFLOW_IMAGE_NAME:toxicity_api:latest}
     ports:
       - 5000:5000
-    volumes:
-      - ./data:/app/data
-      - ./src:/app/src  # Монтируем исходники
-    restart: always
 
 volumes:
   postgres-db-volume:
