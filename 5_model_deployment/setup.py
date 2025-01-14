@@ -16,8 +16,8 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "toxicity-api = app:main",
-            "toxicity-batch-predict = batch_predict:main",
+            "toxicity-api = src.app:main",
+            "toxicity-batch-predict = src.batch_predict:main"
         ]
     },
 )
