@@ -19,8 +19,9 @@ def batch_predict(input_file, output_file):
             raise ValueError("Input CSV must contain a 'comment' column.")
         
         # Применяем модель для предсказания
-        df['prediction'] = df['comment'].apply(lambda x: classifier(x)[0]['label'])
-        df['score'] = df['comment'].apply(lambda x: classifier(x)[0]['score'])
+        predictions = df['comment'].apply(classifier)
+        df['prediction'] = predictions.apply(lambda x: x[0]['label'])
+        df['score'] = predictions.apply(lambda x: x[0]['score'])
 
         # Сохраняем результат
         df.to_csv(output_file, index=False)
