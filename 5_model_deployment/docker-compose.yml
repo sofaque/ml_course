@@ -71,7 +71,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.api
-    image:  ${AIRFLOW_IMAGE_NAME:toxicity_api:latest}
+    image:  ${AIRFLOW_IMAGE_NAME:-toxicity_api:latest}
     ports:
       - 5000:5000
 
