@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY requirements.txt /app/requirements.txt
 COPY ./src /app/src
+COPY ./setup.py /app/setup.py
 
 # Устанавливаем зависимости
 RUN pip install --upgrade pip \
