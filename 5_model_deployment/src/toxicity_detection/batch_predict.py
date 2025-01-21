@@ -1,6 +1,6 @@
 import pandas as pd
 import os
-from src.model_loader import load_model
+from toxicity_detection.load_model import load_model
 
 # Загрузка модели
 classifier = load_model()

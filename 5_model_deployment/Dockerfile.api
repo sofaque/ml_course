@@ -1,16 +1,15 @@
 FROM python:3.9-slim
 
-WORKDIR /app
+# Copy necessary files
+COPY requirements.txt pyproject.toml /
+COPY src /src
 
-COPY requirements.txt /app/requirements.txt
-COPY ./src /app/src
-COPY ./setup.py /app/setup.py
-
-# Устанавливаем зависимости
 RUN pip install --upgrade pip \
-    && pip install --no-cache-dir -r /app/requirements.txt \
-    && pip install --no-cache-dir -e /app
+    && pip install --no-cache-dir -r /requirements.txt \
+    && pip install --no-cache-dir /
 
+# Expose port for API
 EXPOSE 5000
 
-CMD ["python", "src/app.py"]
+# Default command to run API
+CMD ["python", "src/toxicity_detection/app.py"]

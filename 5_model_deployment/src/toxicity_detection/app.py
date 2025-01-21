@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify
 from flasgger import Swagger, swag_from
-from src.load_model import load_model
+from toxicity_detection.load_model import load_model
 
 app = Flask(__name__)
 swagger = Swagger(app)
@@ -53,24 +53,23 @@ def home():
 
 @app.route('/predict_form', methods=['GET', 'POST'])
 def predict_form():
+    result_html = "<p>Type your comment for prediction</p>"  # Initialize with a default message
     if request.method == 'POST':
         comment = request.form.get('comment', "")
-        if not comment:
-            result_html = "<p>Type your comment for prediction</p>"
-        else:
-            # Используем модель для предсказания
+        if comment:
+            # Use the model for prediction
             result = classifier(comment)
             label = result[0]['label']
             score = result[0]['score']
             result_html = f"<p>Predicted label: {label}, with score: {score}</p>"
 
-    # Форма с возможным результатом
+    # Form with possible result
     return f'''
         {result_html}
         <form method="post">
-            <label for="comment">Комментарий:</label>
+            <label for="comment">Comment:</label>
             <input type="text" id="comment" name="comment">
-            <button type="submit">Отправить</button>
+            <button type="submit">Submit</button>
         </form>
     '''
 

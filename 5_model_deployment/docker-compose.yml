@@ -1,8 +1,10 @@
 x-airflow-common: 
   &airflow-common
-  build: .
-  image: ${AIRFLOW_IMAGE_NAME:-toxicity_airflow:latest}
+  build:
+      context: .
+      dockerfile: Dockerfile.airflow
   environment:
+    &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
     AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CORE__FERNET_KEY: ''
@@ -14,7 +16,6 @@ x-airflow-common:
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins  
     - ./data:/opt/airflow/data
-    - ./src:/opt/airflow/src  # Монтируем исходники
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     postgres:
@@ -56,24 +57,24 @@ services:
 
   airflow-init:
     <<: *airflow-common
-    command: bash -c "airflow db upgrade && airflow users create -r Admin -u admin -e admin@example.com -f Admin -l User -p admin && airflow webserver"
+    command: version
     environment:
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      <<: *airflow-common-env
       _AIRFLOW_DB_UPGRADE: 'true'
       _AIRFLOW_WWW_USER_CREATE: 'true'
-      _AIRFLOW_WWW_USER_USERNAME: 'admin'
-      _AIRFLOW_WWW_USER_PASSWORD: 'admin'
-    depends_on:
-      - postgres
-    restart: "no"
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
 
   api:
     build:
       context: .
       dockerfile: Dockerfile.api
-    image:  ${AIRFLOW_IMAGE_NAME:-toxicity_api:latest}
     ports:
       - 5000:5000
+    volumes:
+      - ./src:/src  # Монтируем исходники проекта в API контейнер
+    command: ["python", "src/toxicity_detection/app.py"]
+#    command: ["tail", "-f", "/dev/null"]
 
 volumes:
   postgres-db-volume:
