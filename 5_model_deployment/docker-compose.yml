@@ -6,7 +6,7 @@ x-airflow-common:
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
@@ -14,8 +14,9 @@ x-airflow-common:
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
-    - ./plugins:/opt/airflow/plugins  
-    - ./data:/opt/airflow/data
+    - ./plugins:/opt/airflow/plugins 
+    - shared-packages-volume:/opt/shared_packages  # Mount shared packages volume
+
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     postgres:
@@ -40,6 +41,8 @@ services:
 
   airflow-webserver:
     <<: *airflow-common
+    environment:
+      PYTHONPATH: "/opt/shared_packages:${PYTHONPATH}"
     command: webserver
     ports:
       - 8080:8080
@@ -71,10 +74,13 @@ services:
       dockerfile: Dockerfile.api
     ports:
       - 5000:5000
+    environment:
+      PYTHONPATH: "/opt/shared_packages:${PYTHONPATH}"
     volumes:
-      - ./src:/src  # Монтируем исходники проекта в API контейнер
+      - ./src:/src  # Mount project source in API container
+      - shared-packages-volume:/opt/shared_packages  # Mount shared packages volume
     command: ["python", "src/toxicity_detection/app.py"]
-#    command: ["tail", "-f", "/dev/null"]
 
 volumes:
   postgres-db-volume:
+  shared-packages-volume:  # Define a shared volume for data
