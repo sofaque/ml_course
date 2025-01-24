@@ -1,19 +1,13 @@
 FROM python:3.9-slim
 
-# Set working directory
-WORKDIR /opt/shared_packages
-
 # Copy necessary files to /opt/shared_packages
 COPY requirements.txt pyproject.toml ./
 COPY src ./src
 
 # Install dependencies into /opt/shared_packages
 RUN pip install --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt --target /opt/shared_packages \
-    && pip install --no-cache-dir . --target /opt/shared_packages
-
-# Set PYTHONPATH to include /opt/shared_packages
-ENV PYTHONPATH="/opt/shared_packages:$PYTHONPATH"
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir
 
 # Expose port for API
 EXPOSE 5000

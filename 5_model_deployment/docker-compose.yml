@@ -14,13 +14,14 @@ x-airflow-common:
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
-    - ./plugins:/opt/airflow/plugins 
-    - shared-packages-volume:/opt/shared_packages  # Mount shared packages volume
-
+    - ./plugins:/opt/airflow/plugins
+    - /var/run/docker.sock:/var/run/docker.sock  # Allow Docker socket access
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     postgres:
       condition: service_healthy
+  networks:
+    - custom_network
 
 services:
   postgres:
@@ -36,21 +37,20 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 5s
-      retries: 5
+      retries: 1
     restart: always
 
   airflow-webserver:
     <<: *airflow-common
     environment:
-      PYTHONPATH: "/opt/shared_packages:${PYTHONPATH}"
     command: webserver
     ports:
       - 8080:8080
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 10s
-      timeout: 10s
-      retries: 5
+      timeout: 5
+      retries: 1
     restart: always
 
   airflow-scheduler:
@@ -75,12 +75,15 @@ services:
     ports:
       - 5000:5000
     environment:
-      PYTHONPATH: "/opt/shared_packages:${PYTHONPATH}"
     volumes:
       - ./src:/src  # Mount project source in API container
-      - shared-packages-volume:/opt/shared_packages  # Mount shared packages volume
     command: ["python", "src/toxicity_detection/app.py"]
+    networks:
+      - custom_network
 
 volumes:
   postgres-db-volume:
-  shared-packages-volume:  # Define a shared volume for data
+
+networks:
+  custom_network:
+    driver: bridge
