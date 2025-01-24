@@ -42,7 +42,6 @@ services:
 
   airflow-webserver:
     <<: *airflow-common
-    environment:
     command: webserver
     ports:
       - 8080:8080
@@ -74,7 +73,6 @@ services:
       dockerfile: Dockerfile.api
     ports:
       - 5000:5000
-    environment:
     volumes:
       - ./src:/src  # Mount project source in API container
     command: ["python", "src/toxicity_detection/app.py"]
