@@ -49,7 +49,7 @@ services:
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 10s
-      timeout: 5
+      timeout: 5s
       retries: 1
     restart: always
 
