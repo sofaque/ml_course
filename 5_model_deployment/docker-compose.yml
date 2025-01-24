@@ -39,6 +39,8 @@ services:
       interval: 5s
       retries: 1
     restart: always
+    networks:
+     - custom_network
 
   airflow-webserver:
     <<: *airflow-common
