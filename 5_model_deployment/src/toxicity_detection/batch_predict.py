@@ -30,6 +30,6 @@ def batch_predict(input_file, output_file):
         print(f"Error during batch prediction: {e}")
 
 if __name__ == "__main__":
-    input_path = "/opt/airflow/data/input.csv"
-    output_path = "/opt/airflow/data/output.csv"
+    input_path = "/data/input.csv"
+    output_path = "/data/output.csv"
     batch_predict(input_path, output_path)

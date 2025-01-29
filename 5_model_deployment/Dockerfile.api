@@ -3,11 +3,13 @@ FROM python:3.9-slim
 # Copy necessary files to /opt/shared_packages
 COPY requirements.txt pyproject.toml ./
 COPY src ./src
+COPY data ./data
+
 
 # Install dependencies into /opt/shared_packages
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt \
-    && pip install --no-cache-dir
+    && pip install --no-cache-dir /
 
 # Expose port for API
 EXPOSE 5000

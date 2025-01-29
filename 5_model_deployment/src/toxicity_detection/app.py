@@ -49,7 +49,7 @@ def predict():
 
 @app.route('/')
 def home():
-    return "It works! For prediction navigate to /prediction_form"
+    return "It works! For prediction navigate to /predict_form"
 
 @app.route('/predict_form', methods=['GET', 'POST'])
 def predict_form():

@@ -3,6 +3,8 @@ x-airflow-common:
   build:
       context: .
       dockerfile: Dockerfile.airflow
+  env_file:
+    - .env
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: LocalExecutor
@@ -11,11 +13,14 @@ x-airflow-common:
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 10
+    AIRFLOW__CORE__ENABLE_XCOM_PICKLING: 'True'
   volumes:
     - ./dags:/opt/airflow/dags
     - ./logs:/opt/airflow/logs
     - ./plugins:/opt/airflow/plugins
     - /var/run/docker.sock:/var/run/docker.sock  # Allow Docker socket access
+  group_add:
+    - "${DOCKER_GID}"
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
   depends_on:
     postgres:
@@ -77,9 +82,8 @@ services:
       - 5000:5000
     volumes:
       - ./src:/src  # Mount project source in API container
+      - ./data:/data
     command: ["python", "src/toxicity_detection/app.py"]
-    networks:
-      - custom_network
 
 volumes:
   postgres-db-volume:
