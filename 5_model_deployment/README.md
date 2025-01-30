@@ -46,13 +46,13 @@ This project demonstrates the deployment of a machine learning model using Docke
     http://localhost:8080
     ```
     Login:
-        ```bash
-        airflow
-        ```
+   ```bash
+   airflow
+   ```
     Password:
-        ```bash
-        airflow
-        ```
+   ```bash
+   airflow
+   ```
    In the Airflow UI, manually trigger the "data_preprocessing_pipeline" DAG and monitor progress.
    Ensure that all tasks complete with a "success" status.
 
