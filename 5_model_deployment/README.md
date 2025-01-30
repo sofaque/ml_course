@@ -43,23 +43,23 @@ This project demonstrates the deployment of a machine learning model using Docke
 
     Check the next scheduled execution for the batch_prediction DAG:
     Open a new terminal and run:
-    '''bash
+    ```bash
     docker exec -it 5_model_deployment-api-1 airflow dags next-execution batch_prediction
 
     Trigger the batch_prediction DAG manually:
-    '''bash
+    ```bash
     docker exec -it 5_model_deployment-airflow-webserver-1 airflow dags trigger batch_prediction
 
     Check the list of DAGs:
-    '''bash
+    ```bash
     docker exec -it 5_model_deployment-airflow-webserver-1 airflow dags list
 
     List tasks for batch_prediction:
-    '''bash
+    ```bash
     docker exec -it 5_model_deployment-airflow-webserver-1 airflow tasks list batch_prediction
 
     After running the DAG, verify that the output.csv file has been generated in the /data folder within the container:
-    '''bash
+    ```bash
     docker exec -it 5_model_deployment-api-1 ls /data
 
 
