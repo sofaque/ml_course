@@ -1,0 +1,6 @@
+flask
+flasgger
+transformers
+pandas
+scikit-learn
+pytest

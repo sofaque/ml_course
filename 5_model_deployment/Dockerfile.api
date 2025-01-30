@@ -1,0 +1,20 @@
+FROM python:3.9-slim
+
+# Copy necessary files
+COPY requirements.txt pyproject.toml ./
+COPY src ./src
+COPY data ./data
+COPY Makefile ./Makefile
+#COPY tests ./tests
+
+# Install dependencies
+RUN pip install --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt \
+    && pip install --no-cache-dir /
+RUN apt-get update && apt-get install -y make
+
+# Expose port for API
+EXPOSE 5000
+
+# Default command to run API
+CMD ["python", "src/toxicity_detection/app.py"]

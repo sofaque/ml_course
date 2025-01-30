@@ -1,0 +1,7 @@
+*egg-info
+*venv
+*__pycache__
+*env
+/logs
+/plugins
+data/output.csv
