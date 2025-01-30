@@ -40,7 +40,10 @@ This project demonstrates the deployment of a machine learning model using Docke
    Check if the comment was correctly classified.
 
 9. **Verify Airflow DAG Execution**
-
+    To check the next scheduled run in terminal run:
+    ```bash
+    docker exec -it 5_model_deployment-airflow-webserver-1 airflow dags next-execution batch_prediction
+    
     To monitor the DAG execution in UI, open the Airflow web UI in your browser:
     ```bash
     http://localhost:8080
@@ -56,8 +59,7 @@ This project demonstrates the deployment of a machine learning model using Docke
    In the Airflow UI, manually trigger the "data_preprocessing_pipeline" DAG and monitor progress.
    Ensure that all tasks complete with a "success" status.
 
-    Confirm that output file was created and is available in
-    ml_course_test/5_pipelines/data
+    Confirm that output file with prediction results was created and is available in ml_course_test/5_pipelines/data
    
 11. **Shutdown**
 
