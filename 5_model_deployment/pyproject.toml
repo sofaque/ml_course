@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "toxicity_detection"
+version = "0.1.0"
+description = "Toxicity detection API using Hugging Face model."
+authors = [{ name = "Uladzislau" }]
+dependencies = [
+    "flask",
+    "flasgger",
+    "transformers",
+    "torch",
+    "pandas"
+]
+readme = "README.md"
+requires-python = ">=3.6"
+
+[project.scripts]
+toxicity-api = "src.toxicity_detection.app:main"
+toxicity-batch-predict = "src.toxicity_detection.batch_predict:main"
