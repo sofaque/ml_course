@@ -18,8 +18,8 @@ This project demonstrates the deployment of a machine learning model using Docke
 
 4. **Set environment variables**
    ```bash
-   echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
-   echo "DATA_PATH=$(pwd)/data" > .env
+   echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" >> .env
+   echo "DATA_PATH=$(pwd)/data" >> .env
    echo "DOCKER_GID=$(getent group docker | cut -d: -f3)" >> .env
 
 5. **Build and start Docker containers**
