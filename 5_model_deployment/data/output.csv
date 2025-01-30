@@ -1,4 +1,0 @@
-comment,prediction,score,prediction_time
-This is a test comment,not_toxic,0.9989370703697205,2025-01-30T02:52:05.949791
-Fuck you,toxic,0.9961148500442505,2025-01-30T02:52:05.949791
-Nice and polite message,not_toxic,0.9851306080818176,2025-01-30T02:52:05.949791

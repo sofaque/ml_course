@@ -4,4 +4,4 @@
 *env
 /logs
 /plugins
-output.csv
+data/output.csv
