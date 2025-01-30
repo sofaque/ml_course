@@ -25,7 +25,7 @@ This project demonstrates the deployment of a machine learning model using Docke
 5. **Build and start Docker containers**
    ```bash
    docker-compose build
-   docker-compose up -d
+   docker-compose up
 
 6. **Open a new terminal and run the following command to execute tests:**
    Open your browser and go to:
@@ -41,32 +41,6 @@ This project demonstrates the deployment of a machine learning model using Docke
 
 9. **Verify Airflow DAG Execution**
 
-    Check the next scheduled execution for the batch_prediction DAG:
-    Open a new terminal and run:
-    ```bash
-    docker exec -it 5_model_deployment-api-1 airflow dags next-execution batch_prediction
-    ```
-    Trigger the batch_prediction DAG manually:
-    ```bash
-    docker exec -it 5_model_deployment-airflow-webserver-1 airflow dags trigger batch_prediction
-    ```
-
-    Check the list of DAGs:
-    ```bash
-    docker exec -it 5_model_deployment-airflow-webserver-1 airflow dags list
-    ```
-
-    List tasks for batch_prediction:
-    ```bash
-    docker exec -it 5_model_deployment-airflow-webserver-1 airflow tasks list batch_prediction
-    ```
-
-    After running the DAG, verify that the output.csv file has been generated in the /data folder within the container:
-    ```bash
-    docker exec -it 5_model_deployment-api-1 ls /data
-    ```
-
-
     To monitor the DAG execution in UI, open the Airflow web UI in your browser:
     ```bash
     http://localhost:8080
@@ -79,8 +53,13 @@ This project demonstrates the deployment of a machine learning model using Docke
         ```bash
         airflow
         ```
-        
-10. **Shutdown**
+   In the Airflow UI, manually trigger the "data_preprocessing_pipeline" DAG and monitor progress.
+   Ensure that all tasks complete with a "success" status.
+
+    Confirm that output file was created and is available in
+    ml_course_test/5_pipelines/data
+   
+11. **Shutdown**
 
     When finished, stop and remove volumes:
     ```bash
