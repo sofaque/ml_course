@@ -3,3 +3,4 @@ flasgger
 transformers
 pandas
 scikit-learn
+pytest

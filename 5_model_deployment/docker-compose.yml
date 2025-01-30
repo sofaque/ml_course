@@ -1,93 +1,94 @@
 x-airflow-common: 
   &airflow-common
   build:
-      context: .
-      dockerfile: Dockerfile.airflow
+    context: .  # Build the Docker image from the current directory
+    dockerfile: Dockerfile.airflow  # Use Dockerfile.airflow for this service
   env_file:
-    - .env
+    - .env  # Load environment variables from .env file
   environment:
     &airflow-common-env
-    AIRFLOW__CORE__EXECUTOR: LocalExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    AIRFLOW__CORE__FERNET_KEY: ''
-    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-    AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 10
-    AIRFLOW__CORE__ENABLE_XCOM_PICKLING: 'True'
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor  # Use LocalExecutor for Airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow  # PostgreSQL connection string
+    AIRFLOW__CORE__FERNET_KEY: ''  # Fernet encryption key (left empty here)
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'  # Dags will be paused when created
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'  # Do not load example DAGs
+    AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 10  # Minimum interval for scheduler file processing
+    AIRFLOW__CORE__ENABLE_XCOM_PICKLING: 'True'  # Enable XCom pickling
   volumes:
-    - ./dags:/opt/airflow/dags
-    - ./logs:/opt/airflow/logs
-    - ./plugins:/opt/airflow/plugins
-    - /var/run/docker.sock:/var/run/docker.sock  # Allow Docker socket access
+    - ./dags:/opt/airflow/dags  # Mount local dags directory to Airflow container
+    - ./logs:/opt/airflow/logs  # Mount logs directory to Airflow container
+    - ./plugins:/opt/airflow/plugins  # Mount plugins directory to Airflow container
+    - /var/run/docker.sock:/var/run/docker.sock  # Allow Docker socket access for Airflow
   group_add:
-    - "${DOCKER_GID}"
-  user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
+    - "${DOCKER_GID}"  # Add Docker group for permission handling
+  user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"  # Use specified or default user IDs
   depends_on:
     postgres:
-      condition: service_healthy
+      condition: service_healthy  # Wait for PostgreSQL service to be healthy
   networks:
-    - custom_network
+    - custom_network  # Attach to custom network
 
 services:
   postgres:
-    image: postgres:13
+    image: postgres:13  # Use PostgreSQL 13 image
     environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
+      POSTGRES_USER: airflow  # Set PostgreSQL username
+      POSTGRES_PASSWORD: airflow  # Set PostgreSQL password
+      POSTGRES_DB: airflow  # Set PostgreSQL database name
     volumes:
-      - postgres-db-volume:/var/lib/postgresql/data
+      - postgres-db-volume:/var/lib/postgresql/data  # Persist PostgreSQL data
     ports:
-      - 5432:5432
+      - 5432:5432  # Expose PostgreSQL port
     healthcheck:
-      test: ["CMD", "pg_isready", "-U", "airflow"]
-      interval: 5s
-      retries: 1
-    restart: always
+      test: ["CMD", "pg_isready", "-U", "airflow"]  # Check if PostgreSQL is ready
+      interval: 5s  # Run healthcheck every 5 seconds
+      retries: 1  # Retry once before failing
+    restart: always  # Restart always on failure
     networks:
-     - custom_network
+     - custom_network  # Connect to custom network
 
   airflow-webserver:
-    <<: *airflow-common
-    command: webserver
+    <<: *airflow-common  # Inherit settings from common Airflow config
+    command: webserver  # Run Airflow webserver
     ports:
-      - 8080:8080
+      - 8080:8080  # Expose webserver port
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
-      interval: 10s
-      timeout: 5s
-      retries: 1
-    restart: always
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]  # Health check for webserver
+      interval: 10s  # Check every 10 seconds
+      timeout: 5s  # Timeout after 5 seconds
+      retries: 1  # Retry once before failing
+    restart: always  # Restart always on failure
 
   airflow-scheduler:
-    <<: *airflow-common
-    command: scheduler
-    restart: always
+    <<: *airflow-common  # Inherit settings from common Airflow config
+    command: scheduler  # Run Airflow scheduler
+    restart: always  # Restart always on failure
 
   airflow-init:
-    <<: *airflow-common
-    command: version
+    <<: *airflow-common  # Inherit settings from common Airflow config
+    command: version  # Run Airflow version command to initialize
     environment:
-      <<: *airflow-common-env
-      _AIRFLOW_DB_UPGRADE: 'true'
-      _AIRFLOW_WWW_USER_CREATE: 'true'
-      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
-      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+      <<: *airflow-common-env  # Include common environment settings
+      _AIRFLOW_DB_UPGRADE: 'true'  # Upgrade the database on startup
+      _AIRFLOW_WWW_USER_CREATE: 'true'  # Create Airflow web user
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}  # Default username for web interface
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}  # Default password for web interface
 
   api:
     build:
-      context: .
-      dockerfile: Dockerfile.api
+      context: .  # Build the image from the current directory
+      dockerfile: Dockerfile.api  # Use Dockerfile.api for API service
     ports:
-      - 5000:5000
+      - 5000:5000  # Expose API port
     volumes:
-      - ./src:/src  # Mount project source in API container
-      - ./data:/data
-    command: ["python", "src/toxicity_detection/app.py"]
+      - ./src:/src  # Mount source code for the API
+      - ./data:/data  # Mount data directory
+      - ./tests:/tests  # Mount tests directory
+    command: ["python", "src/toxicity_detection/app.py"]  # Start the API app
 
 volumes:
-  postgres-db-volume:
+  postgres-db-volume:  # Define persistent volume for PostgreSQL data
 
 networks:
   custom_network:
-    driver: bridge
+    driver: bridge  # Use bridge network driver

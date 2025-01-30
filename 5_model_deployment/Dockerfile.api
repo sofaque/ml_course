@@ -1,12 +1,13 @@
 FROM python:3.9-slim
 
-# Copy necessary files to /opt/shared_packages
+# Copy necessary files
 COPY requirements.txt pyproject.toml ./
 COPY src ./src
 COPY data ./data
+COPY Makefile ./Makefile
+#COPY tests ./tests
 
-
-# Install dependencies into /opt/shared_packages
+# Install dependencies
 RUN pip install --upgrade pip \
     && pip install --no-cache-dir -r requirements.txt \
     && pip install --no-cache-dir /
