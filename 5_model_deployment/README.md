@@ -40,6 +40,7 @@ This project demonstrates the deployment of a machine learning model using Docke
    Check if the comment was correctly classified.
 
 9. **Verify Airflow DAG Execution**
+    
     To check the next scheduled execution in terminal run:
     ```bash
     docker exec -it 5_model_deployment-airflow-webserver-1 airflow dags next-execution batch_prediction
