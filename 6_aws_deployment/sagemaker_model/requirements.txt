@@ -1,0 +1,4 @@
+flask
+transformers
+boto3
+torch
