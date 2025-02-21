@@ -5,7 +5,6 @@
 git clone https://github.com/sofaque/ml_course.git
 ```
 ## 2. Navigate to the project directory:
-Initialize DVC:
 ```bash
 cd ml_course_test/3_experiment_tracking
 ```
