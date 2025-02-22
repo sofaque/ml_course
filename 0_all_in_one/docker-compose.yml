@@ -1,0 +1,140 @@
+services:
+
+jupyter_main:
+  build:
+    context: .
+    dockerfile: Dockerfile.jupyter
+    args:
+      USER_ID: ${USER_UID:-1000}
+      GROUP_ID: ${USER_GID:-1000}
+  ports:
+    - "8888:8888"
+  volumes:
+    - ../1_containerization:/app/1_containerization
+    - ../3_experiment_tracking/:/app/3_experiment_tracking
+  environment:
+    - JUPYTER_TOKEN=""
+    - MLFLOW_TRACKING_URI=http://mlflow-server:5000
+  user: "${USER_UID:-1000}:${USER_GID:-1000}"
+  depends_on:
+    - mlflow-server
+
+  mlflow-server:
+    build:
+      context: ../3_experiment_tracking
+      dockerfile: Dockerfile.mlflow
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../3_experiment_tracking/mlflow_artifacts:/mlflow_artifacts
+    environment:
+      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
+
+  # Unified Airflow Stack для Tasks 4 и 5 (с единым Airflow UI на порту 8080)
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: airflow
+      POSTGRES_PASSWORD: airflow
+      POSTGRES_DB: airflow
+    volumes:
+      - postgres-db-volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "airflow"]
+      interval: 5s
+      retries: 5
+    restart: always
+
+  airflow_webserver:
+    build:
+      context: ../4_pipelines
+      dockerfile: Dockerfile
+    image: unified_airflow:latest
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: ''
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 10
+    volumes:
+      - ./dags:/opt/airflow/dags   # объединённая папка DAGs (с DAG-ами из Tasks 4 и 5)
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    ports:
+      - "8080:8080"
+    user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
+    depends_on:
+      - postgres
+    command: webserver
+    restart: always
+
+  airflow_scheduler:
+    build:
+      context: ../4_pipelines
+      dockerfile: Dockerfile
+    image: unified_airflow:latest
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: ''
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 10
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ../5_model_deployment/dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
+    command: scheduler
+    restart: always
+
+  airflow_init:
+    build:
+      context: ../4_pipelines
+      dockerfile: Dockerfile
+    image: unified_airflow:latest
+    environment:
+      AIRFLOW__CORE__EXECUTOR: LocalExecutor
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__CORE__FERNET_KEY: ''
+      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
+      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
+      AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 10
+      _AIRFLOW_DB_UPGRADE: 'true'
+      _AIRFLOW_WWW_USER_CREATE: 'true'
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ../5_model_deployment/dags:/opt/airflow/dags
+      - ./logs:/opt/airflow/logs
+      - ./plugins:/opt/airflow/plugins
+    user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"
+    command: version
+    restart: "no"
+    depends_on:
+      - postgres
+
+  # Task 5: Model Deployment API (отдельный сервис)
+  api:
+    build:
+      context: ../5_model_deployment
+      dockerfile: Dockerfile.api
+    ports:
+      - "5001:5000"
+    volumes:
+      - ../5_model_deployment/src:/src
+      - ../5_model_deployment/data:/data
+      - ../5_model_deployment/tests:/tests
+    command: ["python", "src/toxicity_detection/app.py"]
+
+volumes:
+  postgres-db-volume:
+
+networks:
+  default:
+    driver: bridge

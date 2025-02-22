@@ -12,6 +12,9 @@ RUN pip install --no-cache-dir -r requirements.txt
 # Install dvc to use container for 2nd task, comment if not needed
 RUN pip install dvc[all]
 
+# installing lightgbm or 3rd task, comment if not needed
+RUN apt-get update && apt-get install -y libgomp1
+
 # Create a group and user with the specified UID and GID
 RUN addgroup --gid $GROUP_ID user && \
     adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user

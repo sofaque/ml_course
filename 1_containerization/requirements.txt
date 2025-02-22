@@ -6,3 +6,7 @@ jupyter
 imbalanced-learn
 PyYAML
 imblearn
+#for 3dr task comment if not needed
+xgboost
+lightgbm
+mlflow
