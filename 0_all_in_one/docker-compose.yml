@@ -1,8 +1,8 @@
 services:
   jupyter_main:
     build:
-      context: .
-      dockerfile: Dockerfile.jupyter
+      context: ../1_containerization
+      dockerfile: Dockerfile
       args:
         USER_ID: ${USER_UID:-1000}
         GROUP_ID: ${USER_GID:-1000}

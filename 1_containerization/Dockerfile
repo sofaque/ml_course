@@ -16,7 +16,7 @@ RUN pip install dvc[all]
 RUN apt-get update && apt-get install -y libgomp1
 
 # Create a group and user with the specified UID and GID
-RUN addgroup --gid $GROUP_ID user && \
+RUN addgroup --gid $GROUP_ID user || true && \
     adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 
 # turning off password/token protection for notebook
