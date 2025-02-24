@@ -19,7 +19,7 @@ RUN apt-get update && apt-get install -y libgomp1
 RUN addgroup --gid $GROUP_ID user || true && \
     adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID user
 
-# turning off password/token protection for notebook
+# turning off password/token protection for notebook for root user
 RUN mkdir -p /root/.jupyter && \
     echo "c.NotebookApp.token = ''" >> /root/.jupyter/jupyter_notebook_config.py && \
     echo "c.NotebookApp.password = ''" >> /root/.jupyter/jupyter_notebook_config.py
