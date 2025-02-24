@@ -14,7 +14,7 @@ services:
     environment:
       - JUPYTER_TOKEN=""
       - MLFLOW_TRACKING_URI=http://mlflow-server:5000
-    user: "${USER_ID:}:${GROUP_ID:}"
+    user: "${USER_ID}:${GROUP_ID}"
     depends_on:
       - mlflow-server
 
