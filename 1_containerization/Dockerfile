@@ -28,7 +28,7 @@ RUN mkdir -p /root/.jupyter && \
 WORKDIR /app
 
 # Set access rights
-RUN chown -R user:user /app
+RUN chown -R ${USER_ID}:${GROUP_ID} /app
 
 # Switch to the created user
 USER user
