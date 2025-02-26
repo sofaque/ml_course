@@ -1,3 +1,35 @@
+x-airflow-common: 
+  &airflow-common
+  build:
+      context: ../5_model_deployment
+      dockerfile: Dockerfile.airflow  # Use Dockerfile.airflow for this service
+      image: unified_airflow:latest
+  env_file:
+    - .env  # Load environment variables from .env file
+  environment:
+    &airflow-common-env
+    AIRFLOW__CORE__EXECUTOR: LocalExecutor  # Use LocalExecutor for Airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow  # PostgreSQL connection string
+    AIRFLOW__CORE__FERNET_KEY: ''  # Fernet encryption key (left empty here)
+    AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'  # Dags will be paused when created
+    AIRFLOW__CORE__LOAD_EXAMPLES: 'false'  # Do not load example DAGs
+    AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 10  # Minimum interval for scheduler file processing
+    AIRFLOW__CORE__ENABLE_XCOM_PICKLING: 'True'  # Enable XCom pickling
+  volumes:
+    - ./dags:/opt/airflow/dags # Mount local dags directory to Airflow container
+    - ../4_pipelines/dags:/opt/airflow/dags  
+    - ./logs:/opt/airflow/logs  # Mount logs directory to Airflow container
+    - ./plugins:/opt/airflow/plugins  # Mount plugins directory to Airflow container
+    - /var/run/docker.sock:/var/run/docker.sock  # Allow Docker socket access for Airflow
+  group_add:
+    - "${DOCKER_GID}"  # Add Docker group for permission handling
+  user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"  # Use specified or default user IDs
+  depends_on:
+    postgres:
+      condition: service_healthy  # Wait for PostgreSQL service to be healthy
+  networks:
+    - custom_network  # Attach to custom network
+
 services:
   jupyter_main:
     build:
@@ -43,81 +75,37 @@ services:
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 5s
-      retries: 5
+      retries: 1
     restart: always
+    networks:
+     - custom_network 
 
-  airflow_webserver:
-    build: 
-      context: ../5_model_deployment
-      dockerfile: Dockerfile.airflow
-    image: unified_airflow:latest
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__CORE__FERNET_KEY: ''
-      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 10
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ../4_pipelines/dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
+  airflow-webserver:
+    <<: *airflow-common  # Inherit settings from common Airflow config
+    command: webserver  # Run Airflow webserver
     ports:
-      - "8080:8080"
-    user: "${USER_UID:-50000}:${USER_GID:-50000}"
-    depends_on:
-      - postgres
-    command: webserver
-    restart: always
+      - 8080:8080  # Expose webserver port
+    healthcheck:
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]  # Health check for webserver
+      interval: 10s  # Check every 10 seconds
+      timeout: 5s  # Timeout after 5 seconds
+      retries: 1  # Retry once before failing
+    restart: always  # Restart always on failure
 
   airflow_scheduler:
-    build:
-      context: ../5_model_deployment
-      dockerfile: Dockerfile.airflow
-    image: unified_airflow:latest
-    environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__CORE__FERNET_KEY: ''
-      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 10
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ../4_pipelines/dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
-    user: "${USER_UID:-50000}:${USER_GID:-50000}"
-    command: scheduler
-    restart: always
+    <<: *airflow-common  # Inherit settings from common Airflow config
+    command: scheduler  # Run Airflow scheduler
+    restart: always  # Restart always on failure
 
   airflow_init:
-    build:
-      context: ../5_model_deployment
-      dockerfile: Dockerfile.airflow
-    image: unified_airflow:latest
+    <<: *airflow-common  # Inherit settings from common Airflow config
+    command: version  # Run Airflow version command to initialize
     environment:
-      AIRFLOW__CORE__EXECUTOR: LocalExecutor
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__CORE__FERNET_KEY: ''
-      AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
-      AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
-      AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 10
-      _AIRFLOW_DB_UPGRADE: 'true'
-      _AIRFLOW_WWW_USER_CREATE: 'true'
-      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}
-      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ../4_pipelines/dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
-    user: "${USER_UID:-50000}:${USER_GID:-50000}"
-    command: version
-    restart: "no"
-    depends_on:
-      - postgres
+      <<: *airflow-common-env  # Include common environment settings
+      _AIRFLOW_DB_UPGRADE: 'true'  # Upgrade the database on startup
+      _AIRFLOW_WWW_USER_CREATE: 'true'  # Create Airflow web user
+      _AIRFLOW_WWW_USER_USERNAME: ${_AIRFLOW_WWW_USER_USERNAME:-airflow}  # Default username for web interface
+      _AIRFLOW_WWW_USER_PASSWORD: ${_AIRFLOW_WWW_USER_PASSWORD:-airflow}  # Default password for web interface
 
   # Task 5: Model Deployment API (отдельный сервис)
   api:
