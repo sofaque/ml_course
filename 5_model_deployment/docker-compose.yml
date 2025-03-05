@@ -41,8 +41,8 @@ services:
       - 5432:5432  # Expose PostgreSQL port
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]  # Check if PostgreSQL is ready
-      interval: 5s  # Run healthcheck every 5 seconds
-      retries: 1  # Retry once before failing
+      interval: 10s  # Run healthcheck every 5 seconds
+      retries: 3  # Retry once before failing
     restart: always  # Restart always on failure
     networks:
      - custom_network  # Connect to custom network
