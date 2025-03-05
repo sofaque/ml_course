@@ -22,7 +22,7 @@ x-airflow-common:
     - /var/run/docker.sock:/var/run/docker.sock  # Allow Docker socket access for Airflow
   group_add:
     - "${DOCKER_GID}"  # Add Docker group for permission handling
-  user: "${USER_UID:-50000}:${USER_GID:-50000}"  # Use specified or default user IDs
+  user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"  # Use specified or default user IDs
   depends_on:
     postgres:
       condition: service_healthy  # Wait for PostgreSQL service to be healthy
