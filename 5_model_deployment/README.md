@@ -10,7 +10,7 @@ This project demonstrates the deployment of a machine learning model using Docke
 
 2. **Navigate to the project directory**
    ```bash
-   cd ml_course_test/5_model_deployment
+   cd ml_course/5_model_deployment
 
 3. **Prepare the necessary directories**
    ```bash
