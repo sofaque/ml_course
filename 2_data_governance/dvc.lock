@@ -1,0 +1,168 @@
+schema: '2.0'
+stages:
+  cleaning:
+    cmd: python cleaning.py
+    deps:
+    - path: cleaning.py
+      hash: md5
+      md5: 0631c875afbc07820c70e95522266795
+      size: 476
+    - path: dataset_57_hypothyroid.csv
+      hash: md5
+      md5: 044314e32dd9bcbac7b067fa67736c2f
+      size: 306545
+      isexec: true
+    outs:
+    - path: data_cleaned.csv
+      hash: md5
+      md5: d05fc5f5651d5289dbff3a3218c410f1
+      size: 188506
+  split:
+    cmd: python split.py
+    deps:
+    - path: data_cleaned.csv
+      hash: md5
+      md5: d05fc5f5651d5289dbff3a3218c410f1
+      size: 188506
+    - path: split.py
+      hash: md5
+      md5: 5a1e5c20988e36d6ef0e9effb6629040
+      size: 715
+    outs:
+    - path: X_test.csv
+      hash: md5
+      md5: 91af6c390f2f32bfca09f156d3815e87
+      size: 58789
+    - path: X_train.csv
+      hash: md5
+      md5: b38cc3e12918534a3d0f5fdf4006d579
+      size: 136774
+    - path: y_test.csv
+      hash: md5
+      md5: 3a9d8f2174215a68d5daea1af068af95
+      size: 5236
+    - path: y_train.csv
+      hash: md5
+      md5: 7c2bfa37bb3fe1ce0ebcba057b6769ad
+      size: 12162
+  encoding:
+    cmd: python encoding.py
+    deps:
+    - path: X_test.csv
+      hash: md5
+      md5: 91af6c390f2f32bfca09f156d3815e87
+      size: 58789
+    - path: X_train.csv
+      hash: md5
+      md5: b38cc3e12918534a3d0f5fdf4006d579
+      size: 136774
+    - path: encoding.py
+      hash: md5
+      md5: fbf2d5e1b9ccb5aeeeea9226a48508fb
+      size: 893
+    - path: y_test.csv
+      hash: md5
+      md5: 3a9d8f2174215a68d5daea1af068af95
+      size: 5236
+    - path: y_train.csv
+      hash: md5
+      md5: 7c2bfa37bb3fe1ce0ebcba057b6769ad
+      size: 12162
+    outs:
+    - path: X_test_encoded.csv
+      hash: md5
+      md5: b7573ad78cc83756a1dd61513507a9f9
+      size: 56323
+    - path: X_train_encoded.csv
+      hash: md5
+      md5: 24a3261025b473165c70c1fae868c118
+      size: 131007
+    - path: y_test_encoded.csv
+      hash: md5
+      md5: 03016aa7032b8e3cd5cacd606dda70e9
+      size: 4651
+    - path: y_train_encoded.csv
+      hash: md5
+      md5: e3b8ef2aacd9a6db1b47c1930b6d460b
+      size: 11836
+  scaling:
+    cmd: python scaling.py
+    deps:
+    - path: X_test_encoded.csv
+      hash: md5
+      md5: b7573ad78cc83756a1dd61513507a9f9
+      size: 56323
+    - path: X_train_encoded.csv
+      hash: md5
+      md5: 24a3261025b473165c70c1fae868c118
+      size: 131007
+    - path: scaling.py
+      hash: md5
+      md5: fad231fa476c9f6cf19b43f9a1518452
+      size: 482
+    outs:
+    - path: X_test_scaled.csv
+      hash: md5
+      md5: fe6ac08af9fb842cd77320ff3468e3a1
+      size: 375834
+    - path: X_train_scaled.csv
+      hash: md5
+      md5: b8c3f9960a0c1bb6aa863a151a18e2c3
+      size: 876928
+  resampling:
+    cmd: python resampling.py
+    deps:
+    - path: X_train_scaled.csv
+      hash: md5
+      md5: b8c3f9960a0c1bb6aa863a151a18e2c3
+      size: 876928
+    - path: resampling.py
+      hash: md5
+      md5: 85a120cb7af12e1dd2f9588c5463d60b
+      size: 622
+    - path: y_train_encoded.csv
+      hash: md5
+      md5: e3b8ef2aacd9a6db1b47c1930b6d460b
+      size: 11836
+    params:
+      params.yaml:
+        split:
+          test_size: 0.3
+          random_state: 42
+    outs:
+    - path: X_train_res.csv
+      hash: md5
+      md5: 975565e1d11dbf803c19709d36f06ce0
+      size: 1562660
+    - path: y_train_res.csv
+      hash: md5
+      md5: 3fdf72577910d0e67d921ed569838a1c
+      size: 22735
+  train:
+    cmd: python train.py
+    deps:
+    - path: X_test_scaled.csv
+      hash: md5
+      md5: fe6ac08af9fb842cd77320ff3468e3a1
+      size: 375834
+    - path: X_train_res.csv
+      hash: md5
+      md5: 975565e1d11dbf803c19709d36f06ce0
+      size: 1562660
+    - path: train.py
+      hash: md5
+      md5: 9365b664c520bfd5f57c74d935bc1278
+      size: 1096
+    - path: y_test_encoded.csv
+      hash: md5
+      md5: 03016aa7032b8e3cd5cacd606dda70e9
+      size: 4651
+    - path: y_train_res.csv
+      hash: md5
+      md5: 3fdf72577910d0e67d921ed569838a1c
+      size: 22735
+    outs:
+    - path: metrics.json
+      hash: md5
+      md5: 5a66e36179f4d829ebf4ffaf97fb1812
+      size: 145

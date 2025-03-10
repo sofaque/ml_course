@@ -40,8 +40,8 @@ services:
     ports:
       - "8888:8888"
     volumes:
-      - ../1_containerization:/app/1_containerization
-      - ../3_experiment_tracking/:/app/3_experiment_tracking
+      - ..:/app
+
     environment:
       - JUPYTER_TOKEN=""
       - MLFLOW_TRACKING_URI=http://mlflow-server:5000
