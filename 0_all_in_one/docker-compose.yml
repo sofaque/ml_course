@@ -41,7 +41,7 @@ services:
       - "8888:8888"
     volumes:
       - ..:/app
-      - ./mlruns:/mlflow-server/artifacts  # Монтируем артефакты
+      - ../3_experiment_tracking/mlruns:/mlflow-server/artifacts  # Монтируем артефакты
     environment:
       - JUPYTER_TOKEN=""
     user: "${USER_ID}:${GROUP_ID}"
@@ -55,7 +55,7 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ./mlruns:/mlflow-server
+      - ../3_experiment_tracking/mlruns:/mlflow-server
 
   # Unified Airflow Stack для Tasks 4 и 5 (с единым Airflow UI на порту 8080)
   postgres:
