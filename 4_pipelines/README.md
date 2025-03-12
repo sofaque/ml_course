@@ -10,7 +10,7 @@ This project sets up an Airflow DAG to preprocess data with tasks including clea
 
 2. **Navigate to the project directory**
    ```bash
-   cd ml_course_test/4_pipelines
+   cd ml_course/4_pipelines
 
 3. **Prepare the necessary directories**
    ```bash
@@ -47,7 +47,7 @@ This project sets up an Airflow DAG to preprocess data with tasks including clea
 9. **Verify output**
 
     Confirm that processed files were created and are available in
-    ml_course_test/4_pipelines/data
+    ml_course/4_pipelines/data
 
 9. **Shutdown**
 
