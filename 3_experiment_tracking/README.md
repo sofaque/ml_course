@@ -1,6 +1,5 @@
 # Instructions
 ## 1 Clone the repository
-- If the container is already built, run:
 ```bash
 git clone https://github.com/sofaque/ml_course.git
 ```
