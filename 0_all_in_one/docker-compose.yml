@@ -1,8 +1,8 @@
 x-airflow-common: 
   &airflow-common
   build:
-      context: ../5_model_deployment
-      dockerfile: Dockerfile.airflow  # Use Dockerfile.airflow for this service
+      context: ../4_pipelines
+      dockerfile: Dockerfile  # Use Dockerfile.airflow for this service
   env_file:
     - .env  # Load environment variables from .env file
   environment:
