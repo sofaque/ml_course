@@ -57,7 +57,7 @@ This project demonstrates the deployment of a machine learning model using Docke
    Ensure that all tasks complete with a "success" status.
 
     Confirm that output file was created and is available in
-    ml_course_test/5_pipelines/data
+    ml_course/5_pipelines/data
    
 11. **Shutdown**
 
