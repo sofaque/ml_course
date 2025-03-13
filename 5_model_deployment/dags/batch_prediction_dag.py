@@ -30,7 +30,7 @@ with DAG(
         task_id="batch_predict",  # Unique ID for the task
         image="5_model_deployment-api",  # Docker image name
         api_version="auto",  # Automatically detect Docker API version
-        auto_remove=True,  # Remove the container after execution
+        auto_remove="success",  # Remove the container after execution
         docker_url="unix://var/run/docker.sock",  # Use Docker socket on the host
         network_mode="bridge",  # Use bridge network mode
         command="python src/toxicity_detection/batch_predict.py",  # Command to execute inside the container
