@@ -42,7 +42,7 @@ services:
       - ..:/app
       - ../3_experiment_tracking/mlruns:/mlflow-server/artifacts  # Монтируем артефакты
     environment:
-      - JUPYTER_TOKEN="password"
+      - JUPYTER_TOKEN=password
     user: "${USER_ID}:${GROUP_ID}"
 
   mlflow:
