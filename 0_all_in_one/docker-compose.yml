@@ -80,9 +80,10 @@ services:
       - 8080:8080  # Expose webserver port
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]  # Health check for webserver
-      interval: 10s  # Check every 10 seconds
-      timeout: 5s  # Timeout after 5 seconds
-      retries: 1  # Retry once before failing
+      interval: 30s  # Check every 10 seconds
+      timeout: 10s  # Timeout after 5 seconds
+      retries: 5  # Retry once before failing
+      start_period: 30s
     restart: always  # Restart always on failure
 
   airflow_scheduler:
@@ -112,7 +113,7 @@ services:
       - ../5_model_deployment/data:/data
       - ../5_model_deployment/tests:/tests
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:5001/"]
+      test: ["CMD", "curl", "--fail", "http://localhost:5000/"]
       interval: 60s
       timeout: 10s
       retries: 3
