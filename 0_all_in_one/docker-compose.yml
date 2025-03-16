@@ -126,7 +126,7 @@ services:
         condition: service_healthy
       api:
         condition: service_healthy
-    command: echo "✅✅✅ All services are ready!"
+    command: sh -c 'echo "✅✅✅ All services are ready!"'
 
 volumes:
   postgres-db-volume:
