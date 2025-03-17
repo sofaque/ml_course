@@ -78,6 +78,11 @@ services:
     command: webserver  # Run Airflow webserver
     ports:
       - 8080:8080  # Expose webserver port
+    depends_on:
+      postgres:
+        condition: service_healthy
+      airflow_init:
+        condition: service_completed_successfully
     healthcheck:
       test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]  # Health check for webserver
       interval: 30s  # Check every 30 seconds
