@@ -45,7 +45,7 @@ services:
       - MLFLOW_TRACKING_URI=http://mlflow-server:5000
     user: "${USER_ID}:${GROUP_ID}"
     depends_on:
-      - mlflow-server
+      - mlflow
 
   mlflow:
     build:
