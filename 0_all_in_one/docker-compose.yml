@@ -47,7 +47,7 @@ services:
     depends_on:
       - mlflow
 
-  mlflow:
+  mlflow-server:
     build:
       context: ../3_experiment_tracking
       dockerfile: Dockerfile.mlflow

@@ -17,7 +17,7 @@ services:
     depends_on:
       - mlflow
 
-  mlflow:
+  mlflow-server:
     build:
       context: .
       dockerfile: Dockerfile.mlflow
