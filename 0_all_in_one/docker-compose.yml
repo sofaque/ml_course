@@ -43,6 +43,7 @@ services:
       - ../3_experiment_tracking/mlruns:/mlflow-server/artifacts  # Монтируем артефакты
     environment:
       - JUPYTER_TOKEN=password
+      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
     user: "${USER_ID}:${GROUP_ID}"
     depends_on:
       - mlflow-server
@@ -56,6 +57,7 @@ services:
     volumes:
       - ../3_experiment_tracking/mlruns:/mlflow-server
     environment:
+      - MLFLOW_TRACKING_URI=http://mlflow-server:5000
       
   # Unified Airflow Stack для Tasks 4 и 5 (с единым Airflow UI на порту 8080)
   postgres:
