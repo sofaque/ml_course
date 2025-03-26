@@ -10,8 +10,5 @@ RUN apt-get update && apt-get install -y git
 # Expose the default MLFlow port
 EXPOSE 5000
 
-# Set the working directory
-WORKDIR /mlflow-server
-
 # Command to start MLFlow server
-CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000", "--backend-store-uri", "sqlite:///mlflow.db", "--default-artifact-root", "/mlflow-server/artifacts"]
+CMD ["mlflow", "server", "--host", "0.0.0.0", "--port", "5000"]

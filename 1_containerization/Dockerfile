@@ -26,6 +26,7 @@ RUN mkdir -p /root/.jupyter && \
 
 # Copy all project files into the container
 WORKDIR /app
+COPY . /app
 
 # Set access rights
 RUN chown -R ${USER_ID}:${GROUP_ID} /app

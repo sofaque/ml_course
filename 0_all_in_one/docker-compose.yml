@@ -40,7 +40,6 @@ services:
       - "8888:8888"
     volumes:
       - ..:/app
-      - ../3_experiment_tracking/mlruns:/mlflow-server/artifacts  # Монтируем артефакты
     environment:
       - JUPYTER_TOKEN=password
       - MLFLOW_TRACKING_URI=http://mlflow-server:5000
@@ -55,7 +54,8 @@ services:
     ports:
       - "5000:5000"
     volumes:
-      - ../3_experiment_tracking/mlruns:/mlflow-server
+      - ../3_experiment_tracking/mlflow_artifacts:/mlflow_artifacts
+      - ../3_experiment_tracking/mlruns:/mlruns
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow-server:5000
       
