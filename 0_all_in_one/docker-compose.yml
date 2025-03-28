@@ -113,6 +113,7 @@ services:
 
   # Task 5: Model Deployment API (отдельный сервис)
   api:
+    container_name: 5_model_deployment-api
     build:
       context: ../5_model_deployment
       dockerfile: Dockerfile.api
