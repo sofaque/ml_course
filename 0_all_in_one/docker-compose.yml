@@ -15,10 +15,11 @@ x-airflow-common:
     AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 10  # Minimum interval for scheduler file processing
     AIRFLOW__CORE__ENABLE_XCOM_PICKLING: 'True'  # Enable XCom pickling
   volumes:
-    - ../0_all_in_one/dags:/opt/airflow/dags # Mount local dags directory to Airflow container
+    - ../5_model_deployment/dags:/opt/airflow/dags # Mount local dags directory to Airflow container
     - ../5_model_deployment/logs:/opt/airflow/logs  # Mount logs directory to Airflow container
     - ../5_model_deployment/plugins:/opt/airflow/plugins  # Mount plugins directory to Airflow container
-    - ../5_model_deployment/var/run/docker.sock:/var/run/docker.sock  # Allow Docker socket access for Airflow
+    - /var/run/docker.sock:/var/run/docker.sock  # Allow Docker socket access for Airflow
+    - ../4_pipelines/data:/opt/airflow/data
   group_add:
     - "${DOCKER_GID}"  # Add Docker group for permission handling
   user: "${AIRFLOW_UID:-50000}:${AIRFLOW_GID:-50000}"  # Use specified or default user IDs
@@ -55,7 +56,6 @@ services:
       - "5000:5000"
     volumes:
       - ../3_experiment_tracking/mlflow_artifacts:/mlflow_artifacts
-      - ../3_experiment_tracking/mlruns:/mlruns
     environment:
       - MLFLOW_TRACKING_URI=http://mlflow-server:5000
       
