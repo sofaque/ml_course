@@ -48,9 +48,9 @@ cp -r ../4_pipelines/dags/* ../5_model_deployment/dags/
 ## Setting Up Environment Variables
 
 ```bash
-echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env  # Set user for Airflow container
-echo "DATA_PATH=$(realpath ../5_model_deployment/data)" >> .env  # Used in batch_prediction.py
-echo "DOCKER_GID=$(getent group docker | cut -d: -f3)" >> .env  # Ensures DockerOperator runs correctly
+echo -e "AIRFLOW_UID=$(id -u)\nAIRFLOW_GID=0" > .env
+echo "DATA_PATH=$(realpath ../5_model_deployment/data)" >> .env
+echo "DOCKER_GID=$(getent group docker | cut -d: -f3)" >> .env
 ```
 
 ## Start Services
